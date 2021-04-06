@@ -23,10 +23,18 @@ public class MainActivity extends AppCompatActivity {
         // mi6 A0000073352494 (14 Byte String has no Chechsum, get origin return)
         System.out.println("Mi6 MEID:" + MeiUtil.calculateMeid("A000007335249x"));
 
+        System.out.println("-------------------------------Random PARAM-------------------------------");
         // random generate IMEI & meid, we can checksum it as follow link, to "Decode" the "IMEI/MEID Number"
         // http://phone.fyicenter.com/1268_IMEI_MEID_Number_Checker_Decoder.html#Result
         System.out.println("OnePlus6 Random IMEI:" + MeiUtil.getRandomIMEI(0));
-        System.out.println("OnePlus6 Random IMEI:" + MeiUtil.getRandomMEID(0));
+        System.out.println("OnePlus6 Random MEID:" + MeiUtil.getRandomMEID(0));
+        //TODO
+        System.out.println("OnePlus6 Random serialno:" + MeiUtil.getRandomSerialNo()); //system BUG
+        System.out.println("OnePlus6 Random android_id:" + MeiUtil.getRandomAndroidId());
+        String wifi_mac = MeiUtil.getRandomWirelessMac(0);
+        System.out.println("OnePlus6 Random wifi_mac:" + wifi_mac);
+        System.out.println("OnePlus6 Random p2p0_mac:" + MeiUtil.getRandomP2p0Mac(0));
+        System.out.println("OnePlus6 Random bt_mac/sc_bluetooth_address:" + MeiUtil.getRandomBtMac(wifi_mac));
 
     }
 }

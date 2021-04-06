@@ -1,6 +1,7 @@
 package com.arocket.meigenerator;
 
 
+import java.math.BigInteger;
 import java.util.Random;
 
 /**
@@ -10,6 +11,31 @@ import java.util.Random;
  * 由15位16进制数字组成，前8位是生产商编号，后6位是串号，最后1位是检验码。
  */
 public class MeiUtil {
+    //=======================================================================================
+    /**
+     * Spcified IMEI/MEID number: 869897031961591
+     * Reporting Body Identifier (RBI): 86 - Terminal Industry Forum Association (TAF), China (2位)
+     * Type Allocation Code (TAC): 989703 (6位)
+     * Serial Number (SN): 196159 (6位)
+     * Checksum: 1（1位）
+     * */
+    private final static String[] imei_prefix = {"86989703"};
+
+    /**
+     * Spcified IMEI/MEID number: 99 001157 901920
+     * Reporting Body Identifier (RBI): 99 - Global Hexadecimal Administrator (GHA) / Telecommunications Industry Association (TIA) (2位)
+     * Type Allocation Code (TAC): 001157 (6位)
+     * Serial Number (SN): 901920 (6位)
+     */
+    private final static String[] meid_prefix = {"99001157"};
+
+    private final static String[] wireless_mac_prefix = {"64:A2:F9"};
+
+    private final static String[] p2p0_mac_prefix = {"6C:Q2:R9"};
+
+    //=======================================================================================
+
+
     /**
      * 14位的MEID不需要校验码
      * Spcified IMEI/MEID number: 99 001157 901920
@@ -24,23 +50,6 @@ public class MeiUtil {
     }
 
     /**
-     * Spcified IMEI/MEID number: 869897031961591
-     * Reporting Body Identifier (RBI): 86 - Terminal Industry Forum Association (TAF), China (2位)
-     * Type Allocation Code (TAC): 989703 (6位)
-     * Serial Number (SN): 196159 (6位)
-     * Checksum: 1（1位）
-     * */
-    private static String[] imei_prefix = {"86989703"};
-
-    /**
-     * Spcified IMEI/MEID number: 99 001157 901920
-     * Reporting Body Identifier (RBI): 99 - Global Hexadecimal Administrator (GHA) / Telecommunications Industry Association (TIA) (2位)
-     * Type Allocation Code (TAC): 001157 (6位)
-     * Serial Number (SN): 901920 (6位)
-     */
-    private static String[] meid_prefix = {"99001157"};
-
-    /**
      * @param phoneType
      *      0 -- oneplus6
      *
@@ -50,6 +59,7 @@ public class MeiUtil {
         Random rnd = new Random();
         String number = "" + rnd.nextInt(999999);
         imeiId += number;
+        imeiId += "x";
         return calculateImei(imeiId);
     }
 
@@ -59,6 +69,62 @@ public class MeiUtil {
         String number = "" + rnd.nextInt(999999);
         meid += number;
         return calculateMeid(meid);
+    }
+
+    public static String getRandomSerialNo() {
+        String serialNo = "";
+        Random rnd = new Random();
+        long serialNo_pre = 0x1111 + rnd.nextInt(0xffff - 0x2222);
+        long serialNo_post = 0x1111 + rnd.nextInt(0xffff - 0x2222);
+        serialNo += Long.toHexString(serialNo_pre);
+        serialNo += Long.toHexString(serialNo_post);
+        return serialNo;
+    }
+
+    public static String getRandomAndroidId() {
+        String serialNo = "";
+        Random rnd = new Random();
+        long serialNo_1 = 0x1111 + rnd.nextInt(0xffff - 0x2222);
+        long serialNo_2 = 0x1111 + rnd.nextInt(0xffff - 0x2222);
+        long serialNo_3 = 0x1111 + rnd.nextInt(0xffff - 0x2222);
+        long serialNo_4 = 0x1111 + rnd.nextInt(0xffff - 0x2222);
+        serialNo += Long.toHexString(serialNo_1);
+        serialNo += Long.toHexString(serialNo_2);
+        serialNo += Long.toHexString(serialNo_3);
+        serialNo += Long.toHexString(serialNo_4);
+        return serialNo;
+    }
+
+    public static String getRandomWirelessMac(int phoneType) {
+        Random random = new Random();
+        String wireless_mac = wireless_mac_prefix[phoneType];
+        wireless_mac += String.format(":%02X", random.nextInt(0xfe));
+        wireless_mac += String.format(":%02X", random.nextInt(0xfe));
+        wireless_mac += String.format(":%02X", random.nextInt(0xfe));
+        return wireless_mac;
+    }
+
+    public static String getRandomP2p0Mac(int phoneType) {
+        Random random = new Random();
+        String p2p0_mac = p2p0_mac_prefix[phoneType];
+        p2p0_mac += String.format(":%02X", random.nextInt(0xfe));
+        p2p0_mac += String.format(":%02X", random.nextInt(0xfe));
+        p2p0_mac += String.format(":%02X", random.nextInt(0xfe));
+        return p2p0_mac;
+    }
+
+    // we need wifi mac as template there
+    public static String getRandomBtMac(String WifiMac) {
+        String btMac;
+        Random random = new Random();
+        String[] buff = WifiMac.split(":");
+        // as real info，we just change last %02x in mac address
+        String newMacBit = String.format(":%02X", random.nextInt(0xfe));
+        while(newMacBit.equals(buff[buff.length - 1])) {
+            newMacBit = String.format(":%02X", random.nextInt(0xfe));
+        }
+        btMac = WifiMac.substring(0, WifiMac.length() - 3) + newMacBit;
+        return btMac;
     }
 
     /**
