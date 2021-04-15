@@ -12,6 +12,8 @@ import java.util.Random;
  */
 public class MeiUtil {
     //=======================================================================================
+    public final static int ONEPLUS6 = 0;
+
     /**
      * Spcified IMEI/MEID number: 869897031961591
      * Reporting Body Identifier (RBI): 86 - Terminal Industry Forum Association (TAF), China (2位)
@@ -57,7 +59,7 @@ public class MeiUtil {
     public static String getRandomIMEI(int phoneType) {
         String imeiId = "" + imei_prefix[phoneType];
         Random rnd = new Random();
-        String number = "" + rnd.nextInt(999999);
+        String number = "" + (100000 + rnd.nextInt(799999));
         imeiId += number;
         imeiId += "x";
         return calculateImei(imeiId);
@@ -66,7 +68,7 @@ public class MeiUtil {
     public static String getRandomMEID(int phoneType) {
         String meid = "" + meid_prefix[phoneType];
         Random rnd = new Random();
-        String number = "" + rnd.nextInt(999999);
+        String number = "" + (100000 + rnd.nextInt(799999));
         meid += number;
         return calculateMeid(meid);
     }
