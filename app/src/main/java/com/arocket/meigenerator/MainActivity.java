@@ -30,13 +30,21 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("OnePlus6 Random IMEI:" + imei + ", size:" + imei.length());
         String meid = MeiUtil.getRandomMEID(MeiUtil.ONEPLUS6);
         System.out.println("OnePlus6 Random MEID:" + meid + ", size:" + meid.length());
-        //TODO
+
+
+        String imsi = MeiUtil.getRandomIMSI(MeiUtil.ONEPLUS6);
+        System.out.println("OnePlus6 Random IMSI:" + imsi + ", size:" + imsi.length());
+
+        // we can check ICCID in:
+        // http://phone.fyicenter.com/1155_ICCID_SIM_Card_Number_Checker_Decoder.html#Result
+        String iccid = MeiUtil.getRandomICCID(MeiUtil.CHINA_TELECOM);
+        System.out.println("OnePlus6 Random ICCID:" + iccid + ", size:" + iccid.length());
+
         System.out.println("OnePlus6 Random serialno:" + MeiUtil.getRandomSerialNo()); //system BUG
         System.out.println("OnePlus6 Random android_id:" + MeiUtil.getRandomAndroidId());
         String wifi_mac = MeiUtil.getRandomWirelessMac(MeiUtil.ONEPLUS6);
         System.out.println("OnePlus6 Random wifi_mac:" + wifi_mac);
         System.out.println("OnePlus6 Random p2p0_mac:" + MeiUtil.getRandomP2p0Mac(MeiUtil.ONEPLUS6));
         System.out.println("OnePlus6 Random bt_mac/sc_bluetooth_address:" + MeiUtil.getRandomBtMac(wifi_mac));
-
     }
 }

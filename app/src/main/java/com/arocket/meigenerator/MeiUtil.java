@@ -12,7 +12,15 @@ import java.util.Random;
  */
 public class MeiUtil {
     //=======================================================================================
+    // 手机型号
     public final static int ONEPLUS6 = 0;
+
+
+
+    // 运营商
+    public final static int CHINA_TELECOM = 0;
+    //public final static int CHINA_UNICOM = 1;
+    //public final static int CHINA_MOBILE = 2;
 
     /**
      * Spcified IMEI/MEID number: 869897031961591
@@ -51,6 +59,12 @@ public class MeiUtil {
         return getmeid14(meid);
     }
 
+    public static String calculateIccid(String iccid) {
+        if(19 != iccid.length())
+            return "";
+        return geticcid20(iccid);
+    }
+
     /**
      * @param phoneType
      *      0 -- oneplus6
@@ -71,6 +85,30 @@ public class MeiUtil {
         String number = "" + (100000 + rnd.nextInt(799999));
         meid += number;
         return calculateMeid(meid);
+    }
+
+    public static String getRandomIMSI(int phoneType) {
+        //TODO
+        String chnct_prefi = "46011530047"; // 电信IMSI前缀
+        Random rnd = new Random();
+        String number = "" + (1000 + rnd.nextInt(8800));
+        return chnct_prefi + number;
+    }
+
+    public static String getRandomICCID(int phoneType) {
+        String iccid = "";
+        switch(phoneType) {
+            case 0: // 电信卡ICCID前缀
+                iccid = "8986032094283";
+                break;
+            case 1: // 联通卡ICCID前缀
+            case 2: // 移动卡ICCID前缀
+                break;
+        }
+        Random rnd = new Random();
+        String number = "" + (100000 + rnd.nextInt(889999));
+        iccid += number;
+        return calculateIccid(iccid);
     }
 
     public static String getRandomSerialNo() {
@@ -186,5 +224,46 @@ public class MeiUtil {
         }else{
             return "";
         }
+    }
+
+    private static String geticcid20(String number){
+        if (number.length() != 19)
+            return "";
+
+        int s1 = 0, s2 = 0;
+        String reverse = new StringBuffer(number).toString();
+        for(int i = 0 ;i < reverse.length();i++){
+            int digit = Character.digit(reverse.charAt(i), 10);
+            if(i % 2 == 0){
+                s2 += 2 * digit;
+                if(digit >= 5){
+                    s2 -= 9;//乘机大于10取个位数与十位数相加总数
+                }
+            }else{
+                s1 += digit;
+            }
+        }
+        int last = 10 - (s1 + s2) % 10;
+        if(last == 10)
+            last = 0;
+
+        return (number + last);
+    }
+
+    private static boolean luhnCheck(String number){
+        int s1 = 0, s2 = 0;
+        String reverse = new StringBuffer(number).reverse().toString();
+        for(int i = 0 ;i < reverse.length();i++){
+            int digit = Character.digit(reverse.charAt(i), 10);
+            if(i % 2 == 0){
+                s1 += digit;
+            }else{
+                s2 += 2 * digit;
+                if(digit >= 5){
+                    s2 -= 9;
+                }
+            }
+        }
+        return (s1 + s2) % 10 == 0;
     }
 }
